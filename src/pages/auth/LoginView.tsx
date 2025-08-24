@@ -1,6 +1,12 @@
 import { authenticateUser } from "@/api/AuthAPI";
+import { useForm } from "react-hook-form";
+import ErrorMessage from "@/components/ErrorMessage";
+
 import type { UserLoginForm } from "@/types/index";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useMutation } from "@tanstack/react-query";
+
 
 export default function LoginView() {
 
@@ -9,11 +15,20 @@ export default function LoginView() {
     password: '',
   }
 
-  const handleSubmit = () => {
-    authenticateUser(initialValues)
-  }
+  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues })
 
-  console.log(initialValues)
+  const navigate = useNavigate()
+  const { mutate } = useMutation({
+    mutationFn: authenticateUser,
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+    onSuccess: () => {
+      navigate('/')
+    }
+  })
+
+  const handleLogin = (formData: UserLoginForm) => mutate(formData)
 
   return (
     <>
@@ -21,12 +36,12 @@ export default function LoginView() {
       <h1 className="text-5xl font-black text-white">Iniciar Sesión</h1>
       <p className="text-2xl font-light text-white mt-5">
         Comienza a crear tus tareas <br/>
-        <span className=" text-fuchsia-500 font-bold"> Iniciando sesión en este formulario</span>
+        <span className=" text-fuchsia-500 font-bold"> iniciando sesión en este formulario</span>
       </p>
 
 
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(handleLogin)}
         className="space-y-8 p-10 bg-white rounded-xl mt-10"
         noValidate
       >
@@ -40,7 +55,17 @@ export default function LoginView() {
             type="email"
             placeholder="Email de Registro"
             className="w-full p-3  border-gray-300 border"
+            {...register("email", {
+              required: "El Email es obligatorio",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "E-mail no válido",
+              },
+            })}
           />
+          {errors.email && (
+            <ErrorMessage>{errors.email.message}</ErrorMessage>
+          )}
         </div>
 
         <div className="flex flex-col gap-5">
@@ -52,7 +77,13 @@ export default function LoginView() {
             type="password"
             placeholder="Password de Registro"
             className="w-full p-3  border-gray-300 border"
+            {...register("password", {
+              required: "El Password es obligatorio",
+            })}
           />
+          {errors.password && (
+            <ErrorMessage>{errors.password.message}</ErrorMessage>
+          )}
         </div>
 
         <input
@@ -67,6 +98,10 @@ export default function LoginView() {
           to={'/auth/register'}
           className="text-center text-gray-300 font-normal"
         >¿No tienes cuenta? Crear una </Link>
+        <Link
+          to={'/auth/forgot-password'}
+          className="text-center text-gray-300 font-normal"
+        >¿Olvidaste tu password? Reestablecer</Link>
       </nav>
     </>
   )

@@ -9,5 +9,21 @@ export const authSchema = z.object({
   token: z.string(),
 });
 
+export const userSchema = authSchema.pick({
+    name: true,
+    email: true,
+}).extend({
+    _id: z.string()
+})
+
+export const taskSchema = z.object({
+  _id: z.string(),
+  name: z.string(),
+  description: z.string(),
+})
+
 export type Auth = z.infer<typeof authSchema>
 export type UserLoginForm = Pick<Auth, "email" | "password">;
+
+export type Task = z.infer<typeof taskSchema>;
+export type TaskFormData = Omit<Task, '_id'>;

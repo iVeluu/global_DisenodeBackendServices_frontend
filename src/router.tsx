@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./layouts/NotFound";
 import AuthLayout from "./layouts/AuthLayout";
-import Login from "./components/Login";
 import CreateAccount from "./components/CreateAccount";
-import MainLayout from "./layouts/MainLayout";
 import LoginView from "./pages/auth/LoginView";
 import RegisterView from "./pages/auth/RegisterView";
+import AppLayout from "./layouts/AppLayout";
+import DashboardView from "./pages/tasks/DashboardView";
 
 
 export default function Router() {
@@ -19,8 +19,8 @@ export default function Router() {
         </Route>
 
         {/* Rutas tasks */}
-        <Route element={<MainLayout />}>
-          <Route path='/tasks' element={<Login />} index />
+        <Route element={<AppLayout />}>
+          <Route path='/' element={<DashboardView />} index />
           <Route path='/tasks/create' element={<CreateAccount />} index />
         </Route>
 
