@@ -4,10 +4,10 @@ import { isAxiosError } from "axios";
 import api from "@/lib/axios";
 import { Task, TaskFormData } from "../types";
 
-export async function getAllTask(formData: Task) {
+export async function getAllTask() {
   try {
     const url = '/task'
-    const { data } = await api.post<string>(url, formData)
+    const { data } = await api.get(url)
     console.log(data);
     return data
   } catch (error) {
@@ -17,16 +17,16 @@ export async function getAllTask(formData: Task) {
   }
 }
 
-export async function getTaskById(taskId: Task['_id']) {
+export async function getTaskById(taskId: Task["_id"]): Promise<Task> {
   try {
     const url = `/task/${taskId}`
-    const { data } = await api.post<string>(url)
-    console.log(data);
+    const { data } = await api.get<Task>(url)
     return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error)
     }
+    throw new Error("Error desconocido al obtener la tarea")
   }
 }
 
@@ -49,27 +49,29 @@ type TaskAPIType = {
 }
 
 
-export async function updateTask({ formData, taskId }: TaskAPIType) {
+export async function updateTask({ formData, taskId }: TaskAPIType): Promise<string> {
   try {
     const url = `/task/update/${taskId}`
-    const { data } = await api.post<string>(url, formData)
-    console.log(data);
-    return data
+    const { data } = await api.put<string>(url, formData)
+    return data // <- siempre retorna string en éxito
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error)
     }
+    throw new Error('Error al actualizar la tarea') // <- evita retornar undefined
   }
 }
 
-export async function deleteTask(id: Task['_id']) {
+export async function deleteTask(id: Task["_id"]): Promise<string> {
   try {
-    const url = `/task/delete/${id}`
-    const { data } = await api.post<string>(url)
-    return data
+    const res = await api.delete(`/task/delete/${id}`, { responseType: "text" });
+
+    const body = typeof res.data === "string" ? res.data.trim() : "";
+    return body || "Tarea eliminada Correctamente";
   } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error)
+    if (isAxiosError(error)) {
+      throw new Error('Necesitas ser admin para eliminar!');
     }
+    throw error instanceof Error ? error : new Error("Error desconocido");
   }
 }
