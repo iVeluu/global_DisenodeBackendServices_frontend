@@ -1,7 +1,6 @@
-import { Link, Navigate, Outlet } from "react-router-dom"
+import { Link, Outlet } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
-import { useAuth } from "@/hooks/useAuth"
 import { NavMenu } from "@/components/NavMenu"
 import Logo from "@/components/Logo"
 
