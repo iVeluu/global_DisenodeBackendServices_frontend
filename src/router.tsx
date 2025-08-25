@@ -7,7 +7,7 @@ import DashboardView from "./pages/tasks/DashboardView";
 import UpdateTask from "./pages/tasks/UpdateTask";
 import SpecificTask from "./pages/tasks/SpecificTask";
 import CreateTask from "./pages/tasks/CreateTask";
-import NotFound from "pages/404/NotFound";
+import NotFound from "./pages/404/NotFound";
 
 
 export default function Router() {
