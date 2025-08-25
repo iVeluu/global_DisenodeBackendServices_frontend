@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
+const baseURL = import.meta.env.VITE_API_URL;
+if (!baseURL) console.error("VITE_API_URL no está definido");
+export const api = axios.create({ baseURL });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("AUTH_TOKEN");
