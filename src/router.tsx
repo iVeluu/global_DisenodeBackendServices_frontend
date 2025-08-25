@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NotFound from "./layouts/NotFound";
 import AuthLayout from "./layouts/AuthLayout";
 import LoginView from "./pages/auth/LoginView";
 import RegisterView from "./pages/auth/RegisterView";
@@ -8,6 +7,7 @@ import DashboardView from "./pages/tasks/DashboardView";
 import UpdateTask from "./pages/tasks/UpdateTask";
 import SpecificTask from "./pages/tasks/SpecificTask";
 import CreateTask from "./pages/tasks/CreateTask";
+import NotFound from "pages/404/NotFound";
 
 
 export default function Router() {
@@ -27,9 +27,11 @@ export default function Router() {
           <Route path='/tasks/update/:taskId' element={<UpdateTask />} index />
           <Route path='/tasks/:taskId' element={<SpecificTask />} index />
         </Route>
+        <Route element={<AppLayout />}>
+          <Route path="*" element={<NotFound />} />
+        </Route>
 
         {/* Ruta por defecto cuando no coincide ninguna */}
-        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
